@@ -3,3 +3,4 @@ google-generativeai
 pymongo
 pillow
 python-dotenv
+gunicorn
