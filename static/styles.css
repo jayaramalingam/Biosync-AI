@@ -1,0 +1,154 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Top Bar */
+/* .top-bar {
+    background-color: #1a1a1a;
+    padding: 8px 0;
+    color: white;
+    text-align: center;
+} */
+.navbar ul {
+    display: flex;
+    gap: 20px;
+}
+.navbar a {
+    text-decoration: none;
+    color: #000;
+}
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff; /* Change as needed */
+}
+
+
+.navbar.scrolled {
+    background-color: rgb(255, 255, 255) !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 7px 20px;
+}
+
+.navbar-brand img {
+    height: 50px;
+}
+
+.navbar-nav {
+    margin: auto;
+}
+
+.nav-link {
+    color: #333 !important;
+    font-weight: 500;
+    padding: 8px 15px;
+}
+
+.nav-link:hover,
+.nav-link.active {
+    color: blue !important;
+    text-decoration: underline;
+}
+
+/* Navbar toggler button */
+.navbar-toggler {
+    border: none;
+    background: transparent;
+}
+
+.navbar-toggler:focus {
+    outline: none;
+    box-shadow: none;
+}
+
+/* Cart and Appointment Button */
+.cart-icon {
+    position: relative;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.cart-badge {
+    position: absolute;
+    top: -5px;
+    right: -10px;
+    background-color: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+}
+
+.appointment-btn {
+    background-color: blue;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.appointment-btn:hover {
+    background-color: darkblue;
+}
+
+/* Container */
+.container {
+    max-width: 1000px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
+/* Description */
+.description {
+    font-size: 16px;
+    color: #555;
+    margin-bottom: 20px;
+}
+
+/* Options Section */
+.options {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 20px;
+}
+
+.box {
+    width: 40%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
+    background-color: #f9f9f9;
+}
+
+.box h2 {
+    margin-bottom: 10px;
+}
+
+/* Form Inputs */
+input,
+button {
+    width: 100%;
+    padding: 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+button {
+    background-color: blue;
+    color: white;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: darkblue;
+}

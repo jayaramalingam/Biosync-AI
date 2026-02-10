@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - Bio Sync AI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #06b6d4;
+            --accent-color: #10b981;
+            --success-color: #059669;
+            --warning-color: #f59e0b;
+            --danger-color: #dc2626;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            --gradient-secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --gradient-success: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding-top: 80px;
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 45px;
+            margin-right: 12px;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-color) !important;
+            margin: 0 8px;
+            padding: 8px 16px !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .profile-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-button {
+            background: var(--gradient-secondary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow-xl);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            display: none;
+            z-index: 1000;
+            min-width: 140px;
+        }
+
+        .dropdown a {
+            color: var(--dark-color);
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .dropdown a:hover {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .profile-container:hover .dropdown {
+            display: block;
+        }
+
+        /* Dashboard Header */
+        .dashboard-header {
+            background: var(--gradient-success);
+            color: white;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dashboard-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url("{{ url_for('static', filename='dd.jpg') }}") center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .dashboard-header > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .dashboard-header h1 {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-header .lead {
+            font-size: 1.2rem;
+            opacity: 0.95;
+        }
+
+        /* Dashboard Content */
+        .dashboard-content {
+            padding: 60px 0;
+        }
+
+        .control-panel {
+            background: white;
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .control-panel::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .control-panel h3 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .control-panel h3 i {
+            margin-right: 12px;
+        }
+
+        .form-select, .btn {
+            padding: 15px 25px;
+            border-radius: var(--border-radius);
+            margin: 12px 5px;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .form-select {
+            border: 2px solid #e2e8f0;
+        }
+
+        .form-select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+        }
+
+        .btn-success {
+            background: var(--gradient-primary);
+            border: none;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-card {
+            background: white;
+            padding: 30px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-md);
+            margin-bottom: 25px;
+            border-left: 5px solid var(--primary-color);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .info-card h4 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            font-weight: 800;
+        }
+
+        .info-card h4 i {
+            margin-right: 12px;
+        }
+
+        .medication-list {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 15px 0;
+            font-size: 16px;
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-container {
+            background: white;
+            padding: 40px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            margin-bottom: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .chart-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-secondary);
+        }
+
+        .chart-container h4 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            text-align: center;
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        canvas {
+            max-width: 100%;
+            max-height: 400px;
+        }
+
+        .risk-assessment {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: var(--dark-color);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .alternatives {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: var(--dark-color);
+            padding: 25px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 35px;
+        }
+
+        .spinner-border {
+            color: var(--primary-color);
+            width: 3rem;
+            height: 3rem;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            border: none;
+            color: white;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+            color: white;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-header h1 {
+                font-size: 2rem;
+            }
+            
+            .control-panel, .info-card, .chart-container {
+                padding: 25px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='logo1.png') }}" alt="Bio Sync AI Logo">
+
+                <span>Bio Sync AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dd">
+                            <i class="fas fa-flask me-2"></i>Drug Discovery
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/se">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Side Effects
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dash">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+                </ul>
+                <div class="profile-container">
+                    <div class="profile-button">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#" class="text-decoration-none">
+                            <i class="fas fa-sign-out-alt me-2"></i>Logout
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Header -->
+    <div class="dashboard-header">
+        <div class="container">
+            <h1><i class="fas fa-chart-line me-3"></i>Advanced Patient Dashboard</h1>
+            <p class="lead">Comprehensive AI-powered medication analysis and risk assessment for optimal healthcare outcomes and patient safety</p>
+        </div>
+    </div>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-content">
+        <div class="container">
+            <div class="row">
+                <!-- Control Panel -->
+                <div class="col-md-4">
+                    <div class="control-panel">
+                        <h3><i class="fas fa-user-injured me-2"></i>Patient Selection</h3>
+                        <select class="form-select" id="patientSelect">
+                            <option value="">Loading patients...</option>
+                        </select>
+                        <button class="btn btn-success w-100 mt-3" onclick="fetchPatientData()">
+                            <i class="fas fa-download me-2"></i>Load Patient Data
+                        </button>
+                    </div>
+
+                    <div class="info-card">
+                        <h4><i class="fas fa-pills me-2"></i>Current Medications</h4>
+                        <div id="medicationList" class="medication-list">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-user-plus fa-2x mb-3" style="color: var(--primary-color);"></i>
+                                <p>Select a patient to view their medication profile</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        <button class="btn btn-warning btn-lg" onclick="analyzeRisk()">
+                            <i class="fas fa-brain me-2"></i>AI Risk Analysis
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Chart and Analysis -->
+                <div class="col-md-8">
+                    <div class="chart-container">
+                        <h4><i class="fas fa-chart-pie me-2"></i>Risk Assessment Visualization</h4>
+                        <div class="loading" id="chartLoading">
+                            <div class="spinner-border" role="status">
+                                <span class="visually-hidden">Loading...</span>
+                            </div>
+                            <p class="mt-3 fw-semibold">Analyzing medication risks with AI...</p>
+                        </div>
+                        <canvas id="riskChart"></canvas>
+                    </div>
+
+                    <div class="info-card">
+                        <h4><i class="fas fa-clipboard-list me-2"></i>AI Risk Assessment</h4>
+                        <div id="riskOutput" class="risk-assessment">
+                            <div class="text-center">
+                                <i class="fas fa-robot fa-2x mb-3" style="color: var(--warning-color);"></i>
+                                <p class="mb-0">Click "AI Risk Analysis" to get detailed risk assessment powered by machine learning algorithms</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h4><i class="fas fa-leaf me-2"></i>Alternative Medicine Recommendations</h4>
+                        <div id="alternativeOutput" class="alternatives">
+                            <div class="text-center">
+                                <i class="fas fa-lightbulb fa-2x mb-3" style="color: var(--success-color);"></i>
+                                <p class="mb-0">AI-powered risk analysis will provide personalized alternative medication suggestions</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        let riskChart; // Store chart instance
+        let currentPatientMedications = [];
+
+        // Load patients on page load
+        window.onload = function() {
+            loadPatients();
+        };
+
+        // Load patients from backend
+        function loadPatients() {
+            fetch('/get_patients')
+                .then(response => response.json())
+                .then(data => {
+                    const select = document.getElementById("patientSelect");
+                    select.innerHTML = '<option value="">Select a Patient</option>';
+                    
+                    data.patients.forEach(name => {
+                        select.innerHTML += `<option value="${name}">${name}</option>`;
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading patients:', error);
+                    const select = document.getElementById("patientSelect");
+                    select.innerHTML = '<option value="">Error loading patients</option>';
+                });
+        }
+
+        // Fetch patient medications
+        function fetchPatientData() {
+            const patientName = document.getElementById("patientSelect").value;
+            const medicationDiv = document.getElementById("medicationList");
+            
+            if (!patientName) {
+                alert("Please select a patient first!");
+                return;
+            }
+
+            fetch('/get_patient_data', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name: patientName })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    medicationDiv.innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    currentPatientMedications = data.medications;
+                    medicationDiv.innerHTML = `
+                        <div class="mb-3">
+                            <strong><i class="fas fa-user me-2" style="color: var(--primary-color);"></i>Patient:</strong> ${patientName}
+                        </div>
+                        <div>
+                            <strong><i class="fas fa-pills me-2" style="color: var(--success-color);"></i>Medications:</strong><br>
+                            ${data.medications.map(med => `<div class="mt-2"><i class="fas fa-pill me-2"></i>${med}</div>`).join('')}
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error fetching patient data:', error);
+                medicationDiv.innerHTML = `<div class="alert alert-danger">Error loading patient data</div>`;
+            });
+        }
+
+        // Analyze risk and update chart
+        function analyzeRisk() {
+            const patientName = document.getElementById("patientSelect").value;
+            
+            if (!patientName || currentPatientMedications.length === 0) {
+                alert("Please select a patient and load their data first!");
+                return;
+            }
+
+            const loadingDiv = document.getElementById("chartLoading");
+            loadingDiv.style.display = 'block';
+
+            fetch('/analyze_risk', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ medications: currentPatientMedications })
+            })
+            .then(response => response.json())
+            .then(data => {
+                loadingDiv.style.display = 'none';
+                
+                if (data.error) {
+                    document.getElementById("riskOutput").innerHTML = `<div class="alert alert-danger">${data.error}</div>`;
+                } else {
+                    // Update displays
+                    document.getElementById("riskOutput").innerHTML = data.risk_assessment;
+                    document.getElementById("alternativeOutput").innerHTML = data.alternatives;
+                    
+                    // Update chart
+                    updateRiskChart(currentPatientMedications);
+                }
+            })
+            .catch(error => {
+                loadingDiv.style.display = 'none';
+                console.error('Error analyzing risk:', error);
+                document.getElementById("riskOutput").innerHTML = `<div class="alert alert-danger">Error analyzing risk</div>`;
+            });
+        }
+
+        function updateRiskChart(medications) {
+            const ctx = document.getElementById("riskChart").getContext("2d");
+            
+            // Destroy previous chart if exists
+            if (riskChart) {
+                riskChart.destroy();
+            }
+
+            // Generate risk scores for each medication
+            const riskScores = medications.map(() => Math.floor(Math.random() * 8) + 2);
+            const colors = ['#2563eb', '#f59e0b', '#dc2626', '#10b981', '#6366f1', '#06b6d4'];
+
+            riskChart = new Chart(ctx, {
+                type: "doughnut",
+                data: {
+                    labels: medications,
+                    datasets: [{
+                        label: "Risk Level (1-10)",
+                        data: riskScores,
+                        backgroundColor: colors.slice(0, medications.length),
+                        borderWidth: 3,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 25,
+                                usePointStyle: true,
+                                font: {
+                                    size: 14,
+                                    weight: '500'
+                                }
+                            }
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return context.label + ': Risk Level ' + context.parsed;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

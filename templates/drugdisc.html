@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drug Discovery - Bio Sync AI</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome for icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-dark: #1d4ed8;
+            --secondary-color: #06b6d4;
+            --accent-color: #10b981;
+            --success-color: #059669;
+            --warning-color: #f59e0b;
+            --danger-color: #dc2626;
+            --dark-color: #1f2937;
+            --light-color: #f8fafc;
+            --gradient-primary: linear-gradient(135deg, #2563eb 0%, #06b6d4 100%);
+            --gradient-secondary: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+            --border-radius: 12px;
+            --border-radius-lg: 16px;
+        }
+
+        * {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding-top: 80px;
+            min-height: 100vh;
+            color: var(--dark-color);
+        }
+
+        /* Navbar Styles */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95) !important;
+            backdrop-filter: blur(20px);
+            box-shadow: var(--shadow-md);
+            transition: all 0.3s ease;
+        }
+
+        .navbar-brand {
+            font-weight: 800;
+            font-size: 1.5rem;
+            color: var(--primary-color) !important;
+            display: flex;
+            align-items: center;
+        }
+
+        .navbar-brand img {
+            height: 45px;
+            margin-right: 12px;
+        }
+
+        .nav-link {
+            font-weight: 600;
+            color: var(--dark-color) !important;
+            margin: 0 8px;
+            padding: 8px 16px !important;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--gradient-primary);
+            color: white !important;
+            transform: translateY(-2px);
+        }
+
+        .profile-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .profile-button {
+            background: var(--gradient-secondary);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .profile-button:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            box-shadow: var(--shadow-xl);
+            border-radius: var(--border-radius);
+            padding: 15px;
+            display: none;
+            z-index: 1000;
+            min-width: 160px;
+        }
+
+        .dropdown a {
+            color: var(--dark-color);
+            text-decoration: none;
+            padding: 10px 15px;
+            display: block;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .dropdown a:hover {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .profile-container:hover .dropdown {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 100px 0;
+            text-align: center;
+            margin-bottom: 60px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('/placeholder.svg?height=400&width=1200&text=Drug+Discovery') center/cover;
+            opacity: 0.1;
+            z-index: 0;
+        }
+
+        .hero-section > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-section h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .hero-section .description {
+            font-size: 1.3rem;
+            margin-bottom: 30px;
+            opacity: 0.95;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Main Container */
+        .main-container {
+            padding: 60px 0;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+
+        .section-header h2 {
+            color: var(--primary-color);
+            font-weight: 800;
+            font-size: 3rem;
+            margin-bottom: 20px;
+        }
+
+        .section-header p {
+            font-size: 1.2rem;
+            color: #64748b;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        /* Options Cards */
+        .options {
+            display: flex;
+            justify-content: space-between;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .option-box {
+            flex: 1;
+            background: white;
+            padding: 50px;
+            border-radius: var(--border-radius-lg);
+            box-shadow: var(--shadow-lg);
+            transition: all 0.3s ease;
+            border: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .option-box::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+        }
+
+        .option-box:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .option-box h2 {
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-size: 1.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+        }
+
+        .option-box h2 i {
+            margin-right: 15px;
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+
+        .form-control {
+            padding: 18px 24px;
+            border-radius: var(--border-radius);
+            border: 2px solid #e2e8f0;
+            font-size: 16px;
+            margin-bottom: 25px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 0.2rem rgba(37, 99, 235, 0.25);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            border: none;
+            padding: 18px 35px;
+            font-weight: 600;
+            border-radius: var(--border-radius);
+            font-size: 16px;
+            width: 100%;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* File Upload Area */
+        .file-upload-area {
+            border: 3px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            text-align: center;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            transition: all 0.3s ease;
+            margin-bottom: 25px;
+        }
+
+        .file-upload-area:hover {
+            border-color: var(--secondary-color);
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            transform: translateY(-2px);
+        }
+
+        .file-upload-area.dragover {
+            border-color: var(--accent-color);
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        }
+
+        /* Results Section */
+        .result-container {
+            margin-top: 60px;
+        }
+
+        .result-box {
+            background: white;
+            border-left: 5px solid var(--primary-color);
+            padding: 35px;
+            margin: 25px 0;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            min-height: 120px;
+            height: auto;
+
+
+
+        }
+
+        .medicine-card {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            border-left: 4px solid var(--secondary-color);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .medicine-title {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .medicine-title i {
+            margin-right: 12px;
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 35px;
+        }
+
+        .spinner-border {
+            color: var(--primary-color);
+            width: 3rem;
+            height: 3rem;
+        }
+
+        /* Alert Styles */
+        .alert-custom {
+            border: none;
+            border-radius: var(--border-radius);
+            padding: 25px;
+            font-weight: 500;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .options {
+                flex-direction: column;
+                gap: 30px;
+            }
+            
+            .hero-section h1 {
+                font-size: 2.5rem;
+            }
+            
+            .option-box {
+                padding: 30px;
+            }
+            
+            .section-header h2 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Main Navbar -->
+    <nav class="navbar navbar-expand-lg fixed-top">
+        <div class="container">
+            <a class="navbar-brand" href="/">
+                <img src="{{ url_for('static', filename='logo1.png') }}" alt="Bio Sync AI Logo">
+                <span>Bio Sync AI</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mx-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-2"></i>Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/dd">
+                            <i class="fas fa-flask me-2"></i>Drug Discovery
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/se">
+                            <i class="fas fa-exclamation-triangle me-2"></i>Side Effects
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/dash">
+                            <i class="fas fa-chart-line me-2"></i>Dashboard
+                        </a>
+                    </li>
+                </ul>
+                <div class="profile-container">
+                    <div class="profile-button">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="dropdown">
+                        <a href="#profile"><i class="fas fa-user-circle me-2"></i>Profile</a>
+                        <a href="#settings"><i class="fas fa-cog me-2"></i>Settings</a>
+                        <a href="#logout"><i class="fas fa-sign-out-alt me-2"></i>Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="hero-section">
+        <div class="container">
+            <h1><i class="fas fa-flask me-3"></i>Advanced Drug Discovery</h1>
+            <p class="description">
+                Harness the power of artificial intelligence for comprehensive drug discovery, prescription analysis,
+                and medication safety assessment. Our platform provides real-time insights for safer healthcare outcomes.
+            </p>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <div class="container">
+            <div class="section-header">
+                <h2>🔬 AI-Powered Drug Analysis</h2>
+                <p>Select from our advanced drug analysis tools to get comprehensive medication information and safety insights powered by machine learning algorithms</p>
+            </div>
+            
+            <div class="options">
+                <!-- Drug Name Search -->
+                <div class="option-box">
+                    <h2><i class="fas fa-search"></i>Drug Information Search</h2>
+                    <p class="text-muted mb-4">Enter a medicine name to get detailed AI-powered analysis including drug information, usage guidelines, dosage recommendations, and potential side effects.</p>
+                    
+                    <form onsubmit="fetchDrugInfo(event)">
+                        <div class="mb-3">
+                            <label for="medicine_name" class="form-label fw-semibold">Medicine Name</label>
+                            <input type="text" class="form-control" id="medicine_name"
+                                   placeholder="e.g., Aspirin, Ibuprofen, Paracetamol" required>
+                            <div class="form-text">Enter the generic or brand name of the medication</div>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-search me-2"></i>Search Drug Information
+                        </button>
+                    </form>
+                    
+                    <div class="loading" id="drugLoading">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 fw-semibold">Analyzing drug information with AI...</p>
+                    </div>
+                </div>
+
+                <!-- Prescription Upload for OCR -->
+                <div class="option-box">
+                    <h2><i class="fas fa-file-medical"></i>Prescription Analysis</h2>
+                    <p class="text-muted mb-4">Upload a prescription image to extract medicine names using advanced OCR technology and analyze potential drug interactions with AI-powered safety assessment.</p>
+                    
+                    <form onsubmit="uploadPrescription(event)">
+                        <div class="file-upload-area" id="fileUploadArea">
+                            <i class="fas fa-cloud-upload-alt fa-4x text-muted mb-3"></i>
+                            <h5 class="mb-3">Drag and drop your prescription image here</h5>
+                            <p class="text-muted mb-3">Supports JPG, PNG, PDF formats</p>
+                            <input type="file" class="form-control" id="prescription_image"
+                                   accept="image/*,.pdf" required style="display: none;">
+                            <button type="button" class="btn btn-outline-primary" onclick="document.getElementById('prescription_image').click()">
+                                <i class="fas fa-folder-open me-2"></i>Choose File
+                            </button>
+                        </div>
+                        <div id="selectedFileName" class="text-center mb-3 fw-semibold"></div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-magic me-2"></i>Extract & Analyze
+                        </button>
+                    </form>
+                    
+                    <div class="loading" id="prescriptionLoading">
+                        <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <p class="mt-3 fw-semibold">Processing prescription with AI...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="result-container">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="drug_result" class="result-box">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-pills fa-3x mb-4" style="color: var(--primary-color);"></i>
+                                <h5>Drug Search Results</h5>
+                                <p>Comprehensive AI-powered drug analysis results will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="prescription_result" class="result-box">
+                            <div class="text-center text-muted">
+                                <i class="fas fa-file-medical fa-3x mb-4" style="color: var(--primary-color);"></i>
+                                <h5>Prescription Analysis</h5>
+                                <p>AI-powered prescription analysis results will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // File upload handling
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('prescription_image');
+        const selectedFileName = document.getElementById('selectedFileName');
+
+        fileUploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        });
+
+        fileUploadArea.addEventListener('dragleave', () => {
+            fileUploadArea.classList.remove('dragover');
+        });
+
+        fileUploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                fileInput.files = files;
+                updateFileName(files[0].name);
+            }
+        });
+
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                updateFileName(e.target.files[0].name);
+            }
+        });
+
+        function updateFileName(fileName) {
+            selectedFileName.innerHTML = `<i class="fas fa-file-image me-2" style="color: var(--primary-color);"></i>Selected: ${fileName}`;
+        }
+
+        // Drug info search
+        async function fetchDrugInfo(event) {
+            event.preventDefault();
+            
+            const medicineName = document.getElementById("medicine_name").value.trim();
+            const resultDiv = document.getElementById("drug_result");
+            const loadingDiv = document.getElementById("drugLoading");
+
+            if (!medicineName) {
+                resultDiv.innerHTML = "<div class='alert alert-danger alert-custom'><i class='fas fa-exclamation-triangle me-2'></i>Please enter a medicine name!</div>";
+                return;
+            }
+
+            // Show loading
+            loadingDiv.style.display = 'block';
+            resultDiv.innerHTML = '';
+
+            try {
+                const response = await fetch('/get_drug_info', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ medicine_name: medicineName })
+                });
+
+                const data = await response.json();
+                loadingDiv.style.display = 'none';
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<div class='alert alert-danger alert-custom'><i class='fas fa-exclamation-triangle me-2'></i>${data.error}</div>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="medicine-card">
+                            <div class="medicine-title">
+                                <i class="fas fa-pills"></i>${data.medicine_name}
+                            </div>
+                            <div class="mb-4">
+                                <strong><i class="fas fa-info-circle me-2"></i>AI Analysis:</strong>
+                                <p class="mt-2">${data.description}</p>
+                            </div>
+                            <div class="mb-4">
+                                <strong><i class="fas fa-shield-alt me-2"></i>Safety Information:</strong>
+                                <div class="mt-2">${data.side_effects}</div>
+                            </div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                resultDiv.innerHTML = `<div class='alert alert-danger alert-custom'><i class='fas fa-exclamation-triangle me-2'></i>Error: ${error.message}</div>`;
+            }
+        }
+
+        // Prescription upload
+        async function uploadPrescription(event) {
+            event.preventDefault();
+            
+            const imageFile = document.getElementById("prescription_image").files[0];
+            const resultDiv = document.getElementById("prescription_result");
+            const loadingDiv = document.getElementById("prescriptionLoading");
+
+            if (!imageFile) {
+                resultDiv.innerHTML = "<div class='alert alert-danger alert-custom'><i class='fas fa-exclamation-triangle me-2'></i>Please select an image file!</div>";
+                return;
+            }
+
+            // Show loading
+            loadingDiv.style.display = 'block';
+            resultDiv.innerHTML = '';
+
+            const formData = new FormData();
+            formData.append('image', imageFile);
+
+            try {
+                const response = await fetch('/extract_medicine_names', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+                loadingDiv.style.display = 'none';
+
+                if (data.error) {
+                    resultDiv.innerHTML = `<div class='alert alert-danger alert-custom'><i class='fas fa-exclamation-triangle me-2'></i>${data.error}</div>`;
+                } else {
+                    resultDiv.innerHTML = `
+                        <div class="alert alert-success alert-custom">
+                            <h5><i class="fas fa-check-circle me-2"></i>OCR Processing Complete</h5>
+                            <p class="mb-0">Successfully extracted medicines from prescription</p>
+                        </div>
+                        
+                        <div class="medicine-card">
+                            <div class="medicine-title">
+                                <i class="fas fa-list"></i>Extracted Medications
+                            </div>
+                            <p><strong>Medicines Found:</strong> ${data.medicine_names}</p>
+                        </div>
+                        
+                        <div class="medicine-card">
+                            <div class="medicine-title">
+                                <i class="fas fa-info-circle"></i>AI Analysis
+                            </div>
+                            <div>${data.side_effects}</div>
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                loadingDiv.style.display = 'none';
+                resultDiv.innerHTML = `<div class='alert alert-danger alert-custom'><i class='fas fa-exclamation-triangle me-2'></i>Error: ${error.message}</div>`;
+            }
+        }
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+    </script>
+</body>
+</html>
