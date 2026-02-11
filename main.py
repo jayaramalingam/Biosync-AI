@@ -80,7 +80,7 @@ def init_patient_data():
 patients_data = init_patient_data()
 
 # Gemini API Configuration
-genai.configure(api_key="AIzaSyDmPPEZVQbHZiLkQY5XCOLMM1DaZVjumRA")
+genai.configure(api_key="AIzaSyAW4P-8xzwwPNiEd9KGjju3BN2GRxO07Ac")
 # Using Gemini Flash model
 gemini_model = genai.GenerativeModel("gemini-3-flash-preview")
 
