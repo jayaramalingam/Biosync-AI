@@ -76,4 +76,4 @@ This project was developed as a Computer Science mini/major project to demonstra
 ## 👨‍💻 Author
 **Jaya Ramalingam**
 Computer Science Engineering Student
-For academic and learning purposes only.
+Linkedin-www.linkedin.com/in/jayaramalingam
